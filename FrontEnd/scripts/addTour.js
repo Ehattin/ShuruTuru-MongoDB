@@ -2,7 +2,7 @@ function valdiateForm(){
   $("form[name='tour_form']").validate({
     // Specify validation rules
     rules: {
-      "tour_id":{
+      "tour_name":{
         required: true,
         minlength: 1
       },
@@ -24,7 +24,7 @@ function valdiateForm(){
     // Specify validation error messages
     messages: {
       tour_id:{
-        minlength: "Id must be at least 1 characters long"
+        minlength: "Tour name must be at least 1 characters long"
       },
       guide_name:{
         minlength: "Guide name must be at least 2 characters long"
@@ -42,14 +42,11 @@ function submitForm(){
         url: '/tour', 
         contentType: 'application/json',
         data: JSON.stringify({
-            "id": $("#tour_id").val(),
+            "name": $("#tour_name").val(),
             "start_date": $("#start_date").val().split("-").reverse().join("-"),
             "duration": $("#duration").val(),
             "price": $("#price").val(),
-            "guide": {
-              "name" : $("#guide_name").val(),
-          },
-          "path": []
+            "guide": $("#guide_name").val()
         }),
         processData: false,
         encode: true,

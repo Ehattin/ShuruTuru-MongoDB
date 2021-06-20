@@ -1,5 +1,5 @@
 /* Define URL */
-const PORT = 3001;
+const PORT = 3000;
 const LOCAL_HOST = "http://localhost:"
 const URL = LOCAL_HOST+PORT;
 const TOURS_URL = URL+"/tours";
@@ -19,14 +19,6 @@ const DELETE = "delete";
 /* Global variables */
 let tours_data;
 let table;
-
-
-const jsonToArr = (js) =>{
-    let res = [];
-    for(let i in js)
-        res.push(js[i]);
-     return res[0];   
-};
 
 const createButton = function(btn_class, text){
     return "<button class=\""+btn_class+"\">"+text+"</button>";
@@ -53,10 +45,11 @@ function ajaxCall(http_method, url, success_func) {
 }
  
 function createTable (){
+
         table = $('#toursTable').DataTable( {
         data: tours_data,
         columns: [
-          { data:"id"},
+          { data:"name"},
           { data:"start_date"},
           { data:"duration"},
           { data:"price"},
@@ -87,16 +80,16 @@ function createTable (){
 
 function format ( d ) {
     sites = '';
-    tour_id = d.id;
+    tour_name = d.name;
     if(d.path.length != 0){
         d.path.forEach(site => {
-            deleteButton = createButtonWithId("tableBtn delSiteBtn",site.name +'/' + tour_id,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
+            deleteButton = createButtonWithId("tableBtn delSiteBtn",site.name +'/' + tour_name,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
             sites += '<td>'+'Site name: ' + site.name + 
                             ', Country: '+ site.country + '.' +  
                             deleteButton +'</td>';
         });
     }
-    addButton = createButtonWithId("tableBtn addSiteBtn", tour_id ,'<i class="far fa-plus-square"></i>',"addSite(this.id)");
+    addButton = createButtonWithId("tableBtn addSiteBtn", tour_name ,'<i class="far fa-plus-square"></i>',"addSite(this.id)");
 
   // `d` is the original data object for the row
   return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
@@ -144,8 +137,8 @@ function addGuide(){
     window.location.replace(ADD_GUIDE_URL);
 }
 function editTour(){
-    let tour_id = table.row( $(this).parents('tr') ).data().id;
-    window.location.replace(EDIT_TOUR_URL+tour_id);
+    let tour_name = table.row( $(this).parents('tr') ).data().name;
+    window.location.replace(EDIT_TOUR_URL+tour_name);
 }
 
 function addSite(clicked_id){
@@ -157,8 +150,8 @@ function deleteSite(clicked_id){
 }
 
 function deleteTour(){
-    let tour_id = table.row( $(this).parents('tr') ).data().id;
-    ajaxCall(DELETE, TOUR_URL+tour_id, reloadPage);
+    let tour_name = table.row( $(this).parents('tr') ).data().name;
+    ajaxCall(DELETE, TOUR_URL+tour_name, reloadPage);
 }
 
 function reloadPage(){
@@ -167,7 +160,7 @@ function reloadPage(){
 }
 
 function setData(data){
-    tours_data = jsonToArr(data);
+    tours_data = data;
     createTable();
 }
 

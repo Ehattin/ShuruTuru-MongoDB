@@ -1,14 +1,13 @@
-//TODO - make sure to check
-let tour_id = "";
+let tour_name = "";
 
 function getTourId(){
   let url = window.location.href;
   let tour_index = url.lastIndexOf("/");
-  tour_id = url.substring(tour_index+1);
+  tour_name = url.substring(tour_index+1);
 }
 
 function updateFormId(){
-  $("#tour_id").text(tour_id);
+  $("#tour_id").text(tour_name);
 }
 
 function valdiateForm(){
@@ -43,7 +42,7 @@ function submitForm(){
       if(!$("#site_form").valid()) return;
       $.ajax({
           type: 'PUT', 
-          url: '/sites/'+tour_id, 
+          url: '/sites/'+tour_name, 
           contentType: 'application/json',
           data: JSON.stringify({
               "name": $("#site_name").val(),
