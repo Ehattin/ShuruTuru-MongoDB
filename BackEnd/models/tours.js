@@ -51,7 +51,7 @@ var TourSchema = new mongoose.Schema({
         required:true
     },
     path: {
-        type: PathSchema,
+        type: Map, of:String,
         default: {}
     }
 
