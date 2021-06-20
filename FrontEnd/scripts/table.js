@@ -81,10 +81,10 @@ function createTable (){
 function format ( d ) {
     sites = '';
     tour_name = d.name;
-    for(const [key, value] of Object.entries(d.path)){
-          deleteButton = createButtonWithId("tableBtn delSiteBtn",key +'/' + tour_name,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
-            sites += '<td>'+'Site name: ' + key + 
-                            ', Country: '+ value + '.' +  
+    for(let site of d.path){
+          deleteButton = createButtonWithId("tableBtn delSiteBtn",site.name +'/' + tour_name,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
+            sites += '<td>'+'Site name: ' + site.name + 
+                            ', Country: '+ site.country + '.' +  
                             deleteButton +'</td>';
     }
     addButton = createButtonWithId("tableBtn addSiteBtn", tour_name ,'<i class="far fa-plus-square"></i>',"addSite(this.id)");

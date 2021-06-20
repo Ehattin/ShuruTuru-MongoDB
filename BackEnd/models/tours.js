@@ -1,6 +1,21 @@
 const mongoose = require('mongoose')
 const id_validator = require ('mongoose-id-validator');
 
+var SiteSchema =  new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true
+    },
+    country: {
+        type: String,
+        required: true,
+        trim: true
+    },
+}, { timestamps: false }
+);
+
 var TourSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -31,20 +46,21 @@ var TourSchema = new mongoose.Schema({
             }
         }
     },
+
+    path: [SiteSchema],
+
     guide: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Guide',
         required:true
     },
-    //key - path name, value - path country
-    path: [{
-        name: String,
-        country:String
-    }]
-}, { timestamps: true }
+},  { timestamps: false }
 );
 
 const Tour = mongoose.model('Tour', TourSchema, "Tours");
 TourSchema.plugin(id_validator);
 
-module.exports = Tour
+const Site = mongoose.model('Site', SiteSchema, "Sites");
+SiteSchema.plugin(id_validator);
+
+module.exports = {Tour , Site}

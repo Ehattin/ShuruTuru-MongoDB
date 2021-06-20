@@ -1,4 +1,6 @@
-const Tour = require('../models/tours'),
+const Tours = require('../models/tours'),
+Tour = Tours.Tour,
+Site = Tours.Site,
 Guide = require('../models/guides');
 
 /* ***************CRUD METHODS*************** */
@@ -12,7 +14,6 @@ module.exports = {
      */
     getTours: function (req, res) {
         Tour.find().populate('guide').sort({name:1}).then(tours =>{
-            console.log(tours)
             res.send(tours)
         }
         ).catch(e => res.status(500).send(e))
@@ -93,30 +94,25 @@ module.exports = {
      * Updates a given tour sites. 
      */
     createSiteInPath: function (req, res) {
-        //check for critical fields
-        if(!req.body.name ||  !req.body.country){
-            res.status(400).send("Bad input.This fields are required: site name, site country.");
-            return;
-        }
-
         const tourName = req.params["tour_name"];
-        const siteName = req.body.name;
-        const siteCountry = req.body.country;
-       
-
-        let update = {$addToSet:{"path" : {}}};  
-        update.$addToSet.path[siteName] = siteCountry;
-        console.log(update)
-
-        Tour.updateOne( { name: tourName },update).then(user => {
-            if (!user) {
-                return res.status(404).send("Tour doesn't exist.")
-            }
-            else {
-                res.send(user)
-            }
-        }).catch(e => res.status(400).send("Path with this name already exist."))
-       
+        
+        //creating the new site
+         const site = new Site(req.body);
+        
+         Tour.updateOne( { name: tourName }, 
+            { '$addToSet': { 'path': site } }
+        ).then(user => {
+                if (!user) {
+                   res.status(404).send("Tour doesn't exist.")
+                }
+                else {
+                    console.log("updated succssefuly")
+                    res.status(200).send()
+                }
+            }).catch(e => {
+                console.log("ERROR IN UPDATE: " +e);
+                res.status(400).send("Path with this name already exist.")
+            })
     },
     /* ***************DELETE*************** */
 
@@ -128,22 +124,22 @@ module.exports = {
         
         const tourName = req.params["tour_name"];
         const siteName = req.params["site_name"];
+        const siteCountry = req.body.country;
 
         const siteToDelete = "path." + siteName;
 
         let update = {$unset:{}};    
         update.$unset[siteToDelete] = undefined;
 
-
-        //updating the tour document
-        Tour.updateOne( { name: tourName }, update).then(user => {
-            if (!user) {
-                return res.status(404).send("Tour doesn't exist.")
+        Tour.updateOne({ name: tourName },{$pull: {path:{name: siteName, country:siteCountry}}},{upsert:true,multi:false},
+            (err,data)=>{                
+            if(err)
+                res.status(400).send(err)
+            else{
+                console.log("updated succssefuly")
+             res.status(200).send(data)
             }
-            else {
-                res.send("site deleted succssefuly")
-            }
-        }).catch(e => res.status(400).send("Path with this name already exist."))
+        });
     },
 
     /**
