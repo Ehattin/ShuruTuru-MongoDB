@@ -5,7 +5,8 @@ var TourSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        unique: true
     },
     start_date: {
         type: Date,
@@ -41,7 +42,6 @@ var TourSchema = new mongoose.Schema({
         of: String,
         default: {}
     }
-
 }, { timestamps: true }
 );
 
