@@ -27,6 +27,7 @@ var GuideSchema = new mongoose.Schema({
 }, { timestamps: true }
 );
 
-const Guide = mongoose.model('Guide', GuideSchema);
+const Guide = mongoose.model('Guide', GuideSchema, 
+"Guides");
 
 module.exports = Guide

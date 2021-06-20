@@ -1,6 +1,9 @@
-const express = require('express'),
+const express = require('express')
+    require('../db/mongoose'),
     path = require('path'),
-    routers = require('./routes/routes.js');
+    routers =  require('./routes/routes.js');
+   
+
 const port = 3001;
 
 const app=express();
@@ -15,11 +18,11 @@ app.use('/scripts', express.static(path.join(__dirname, '../FrontEnd/scripts')))
 app.use('/styles', express.static(path.join(__dirname, '../FrontEnd/styles')));
 app.use('/data', express.static(path.join(__dirname, '../BackEnd/data')));
 
-
 //restfull 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/', routers);
+app.use('/',  routers);
+
 
 const server = app.listen(port, () => {
     console.log('listening on port %s...', server.address().port);

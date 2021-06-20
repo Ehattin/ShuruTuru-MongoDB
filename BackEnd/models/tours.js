@@ -45,7 +45,7 @@ var TourSchema = new mongoose.Schema({
 }, { timestamps: true }
 );
 
-const Tour = mongoose.model('Tour', TourSchema);
+const Tour = mongoose.model('Tour', TourSchema, "Tours");
 TourSchema.plugin(id_validator);
 
 module.exports = Tour
