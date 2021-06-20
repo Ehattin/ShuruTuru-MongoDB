@@ -81,14 +81,20 @@ function createTable (){
 function format ( d ) {
     sites = '';
     tour_name = d.name;
-    if(d.path.length != 0){
-        d.path.forEach(site => {
-            deleteButton = createButtonWithId("tableBtn delSiteBtn",site.name +'/' + tour_name,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
-            sites += '<td>'+'Site name: ' + site.name + 
-                            ', Country: '+ site.country + '.' +  
+    for(const [key, value] of Object.entries(d.path)){
+          deleteButton = createButtonWithId("tableBtn delSiteBtn",key +'/' + tour_name,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
+            sites += '<td>'+'Site name: ' + key + 
+                            ', Country: '+ value + '.' +  
                             deleteButton +'</td>';
-        });
     }
+    // if(d.path.length != 0){
+    //     d.path.forEach(site => {
+    //         deleteButton = createButtonWithId("tableBtn delSiteBtn",site.name +'/' + tour_name,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
+    //         sites += '<td>'+'Site name: ' + site.name + 
+    //                         ', Country: '+ site.country + '.' +  
+    //                         deleteButton +'</td>';
+    //     });
+    // }
     addButton = createButtonWithId("tableBtn addSiteBtn", tour_name ,'<i class="far fa-plus-square"></i>',"addSite(this.id)");
 
   // `d` is the original data object for the row
@@ -161,6 +167,7 @@ function reloadPage(){
 
 function setData(data){
     tours_data = data;
+    console.log(tours_data);
     createTable();
 }
 

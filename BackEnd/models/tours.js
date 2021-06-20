@@ -9,7 +9,7 @@ var TourSchema = new mongoose.Schema({
         unique: true
     },
     start_date: {
-        type: Date,
+        type: String,
         required: true,
         trim: true
     },
@@ -37,11 +37,10 @@ var TourSchema = new mongoose.Schema({
         required:true
     },
     //key - path name, value - path country
-    path: {
-        type: Map,
-        of: String,
-        default: {}
-    }
+    path: [{
+        name: String,
+        country:String
+    }]
 }, { timestamps: true }
 );
 

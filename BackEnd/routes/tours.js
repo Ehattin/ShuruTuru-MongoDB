@@ -11,8 +11,10 @@ module.exports = {
      * sorted in ascending order by the tour's name.
      */
     getTours: function (req, res) {
-        Tour.find().sort( { name: 1 } ).then(tours =>
+        Tour.find().populate('guide').sort({name:1}).then(tours =>{
+            console.log(tours)
             res.send(tours)
+        }
         ).catch(e => res.status(500).send(e))
     },
     
@@ -98,14 +100,15 @@ module.exports = {
         }
 
         const tourName = req.params["tour_name"];
-        const siteToAdd = "path." + req.body.name;
+        const siteName = req.body.name;
         const siteCountry = req.body.country;
-    
-        let update = {$addToSet:{}};    
-        update.$addToSet[siteToAdd] = siteCountry;
+       
 
-        //updating the tour document
-        Tour.updateOne( { name: tourName }, update).then(user => {
+        let update = {$addToSet:{"path" : {}}};  
+        update.$addToSet.path[siteName] = siteCountry;
+        console.log(update)
+
+        Tour.updateOne( { name: tourName },update).then(user => {
             if (!user) {
                 return res.status(404).send("Tour doesn't exist.")
             }
