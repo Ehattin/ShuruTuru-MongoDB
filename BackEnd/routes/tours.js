@@ -7,7 +7,8 @@ module.exports = {
     /* ***************READ*************** */
 
     /**  
-     * Returns all availbale tours, In order by name
+     * Returns all availbale tours,    
+     * sorted in ascending order by the tour's name.
      */
     getTours: function (req, res) {
         Tour.find().sort( { name: 1 } ).then(tours =>
@@ -20,7 +21,7 @@ module.exports = {
      */
     getTour: function (req, res) {
         const tourName = req.params["tour_name"];
-        Tour.findOne({ 'name':  tourName}).then(tour =>
+        Tour.findOne({ 'name':  tourName}).populate('guide').then(tour =>
             res.send(tour)
         ).catch(e => res.status(500).send("Tour doesn't exist."))
     },
