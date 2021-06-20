@@ -1,5 +1,5 @@
 /* Define URL */
-const PORT = 3000;
+const PORT = 3001;
 const LOCAL_HOST = "http://localhost:"
 const URL = LOCAL_HOST+PORT;
 const TOURS_URL = URL+"/tours";
@@ -87,14 +87,6 @@ function format ( d ) {
                             ', Country: '+ value + '.' +  
                             deleteButton +'</td>';
     }
-    // if(d.path.length != 0){
-    //     d.path.forEach(site => {
-    //         deleteButton = createButtonWithId("tableBtn delSiteBtn",site.name +'/' + tour_name,'<i class="far fa-minus-square"></i>',"deleteSite(this.id)");
-    //         sites += '<td>'+'Site name: ' + site.name + 
-    //                         ', Country: '+ site.country + '.' +  
-    //                         deleteButton +'</td>';
-    //     });
-    // }
     addButton = createButtonWithId("tableBtn addSiteBtn", tour_name ,'<i class="far fa-plus-square"></i>',"addSite(this.id)");
 
   // `d` is the original data object for the row
