@@ -1,0 +1,33 @@
+{
+  "data": [
+    {
+      "id": "Israel",
+      "start_date": "05-05-2021",
+      "duration": "14",
+      "price": "23500",
+      "guide": {
+        "name": "ayelet",
+        "email": "eitan@gmail.com",
+        "cellular": "0551234567"
+      },
+      "path": [
+        {
+          "name": "Jerusalem",
+          "country": "Israel"
+        }
+      ]
+    },
+    {
+      "id": "USA",
+      "start_date": "28-05-2021",
+      "duration": "100",
+      "price": "250000",
+      "guide": {
+        "name": "Sahar",
+        "email": "sahar@fsaasf.co",
+        "cellular": "0245612345"
+      },
+      "path": []
+    }
+  ]
+}
