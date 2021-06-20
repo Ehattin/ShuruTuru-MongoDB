@@ -30,8 +30,8 @@ function valdiateForm(){
   }
   
   function submitForm(){
-    $('#tour_form').submit(function (event) {
-      if(!$("#tour_form").valid()) return;
+    $('#guide_form').submit(function (event) {
+      if(!$("#guide_form").valid()) return;
       $.ajax({
           type: 'POST', 
           url: '/guide', 
@@ -47,7 +47,7 @@ function valdiateForm(){
           processData: false,
           encode: true,
           success: function( data){
-            alert("Guide was added sucssefuly.");
+            alert("Guide was added successfully.");
             location.href = "/list";
           },
           error: function(request, status, error){

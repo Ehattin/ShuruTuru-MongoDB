@@ -8,6 +8,7 @@ const app=express();
 //front end
 app.use('/list', express.static(path.join(__dirname, '../FrontEnd/html/index.html')));
 app.use('/add_tour', express.static(path.join(__dirname, '../FrontEnd/html/add_tour_form.html')));
+app.use('/add_guide', express.static(path.join(__dirname, '../FrontEnd/html/add_guide_form.html')));
 app.use('/add_site/:tour_id', express.static(path.join(__dirname, '../FrontEnd/html/add_site_form.html')));
 app.use('/edit_tour/:tour_id', express.static(path.join(__dirname, '../FrontEnd/html/edit_tour_form.html')));
 app.use('/scripts', express.static(path.join(__dirname, '../FrontEnd/scripts')));

@@ -19,14 +19,6 @@ function valdiateForm(){
         required: true,
         minlength: 2
       },
-      "email":{
-        required: true,
-        "email" :true
-      },
-      "phone":{
-        required: true,
-        minlength: 9
-      },
     },
 
     // Specify validation error messages
@@ -37,11 +29,7 @@ function valdiateForm(){
       guide_name:{
         minlength: "Guide name must be at least 2 characters long"
       },
-      phone:{
-        minlength: "Phone must be at least 9 characters long"
-      },
-      email: "email structure is some@domain "
-    
+
     },
   });
 }
@@ -60,8 +48,6 @@ function submitForm(){
             "price": $("#price").val(),
             "guide": {
               "name" : $("#guide_name").val(),
-              "email" : $("#email").val(),
-              "cellular" : $("#phone").val(),
           },
           "path": []
         }),
