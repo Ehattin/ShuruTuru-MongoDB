@@ -1,21 +1,6 @@
 const mongoose = require('mongoose')
 const id_validator = require ('mongoose-id-validator');
 
-const PathSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    country: {
-        type: String,
-        required: true,
-        trim: true
-    }
-}, { timestamps: true }
-);
-
-
 var TourSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -50,8 +35,10 @@ var TourSchema = new mongoose.Schema({
         ref: 'Guide',
         required:true
     },
+    //key - path name, value - path country
     path: {
-        type: Map, of:String,
+        type: Map,
+        of: String,
         default: {}
     }
 
