@@ -6,7 +6,7 @@ const express = require('express'),
 var router = express.Router();
 
 router.get('/tours', tourRoutes.getTours);
-router.get('/guide', guideRoutes.getGuides);
+router.get('/guides', guideRoutes.getGuides);
 router.get('/guide/:guide_name', guideRoutes.getGuide);
 router.get('/tours/:tour_name', tourRoutes.getTour);
 router.post('/tour', tourRoutes.createTour);

@@ -37,13 +37,11 @@ function valdiateForm(){
           url: '/guide', 
           contentType: 'application/json',
           data: JSON.stringify({
-              "guide": {
                 "name" : $("#guide_name").val(),
                 "email" : $("#email").val(),
                 "cellular" : $("#phone").val(),
             },
-            "path": []
-          }),
+          ),
           processData: false,
           encode: true,
           success: function( data){
