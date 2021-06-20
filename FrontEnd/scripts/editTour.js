@@ -41,6 +41,7 @@ function submitForm(){
             location.href = "/list";
           },
           error: function(request, status, error){
+            if(status)
               console.log( "Error: data was not load properly" + error);
           }
       })

@@ -121,25 +121,43 @@ module.exports = {
      * If the given site is empty - "", all the tour sites will be deleted.
      */
     deleteSite: function (req, res) {
-        
+
         const tourName = req.params["tour_name"];
         const siteName = req.params["site_name"];
-        const siteCountry = req.body.country;
 
-        const siteToDelete = "path." + siteName;
+        Tour.updateOne( { name: tourName }, 
+            { $pull: { 'path': { name: siteName} }}
+        ).then(user => {
+                if (!user) {
+                   res.status(404).send("Tour doesn't exist.")
+                }
+                else {
+                    console.log("updated succssefuly")
+                    res.status(200).send()
+                }
+            }).catch(e => {
+                console.log("ERROR IN DELETE: " +e);
+                res.status(400).send("Path with this name already exist.")
+            })
+      
+      
+    
+        // const siteCountry = req.body.country;
 
-        let update = {$unset:{}};    
-        update.$unset[siteToDelete] = undefined;
+        // const siteToDelete = "path." + siteName;
 
-        Tour.updateOne({ name: tourName },{$pull: {path:{name: siteName, country:siteCountry}}},{upsert:true,multi:false},
-            (err,data)=>{                
-            if(err)
-                res.status(400).send(err)
-            else{
-                console.log("updated succssefuly")
-             res.status(200).send(data)
-            }
-        });
+        // let update = {$unset:{}};    
+        // update.$unset[siteToDelete] = undefined;
+
+        // Tour.updateOne({ name: tourName },{$pull: {path:{name: siteName, country:siteCountry}}},{upsert:true,multi:false},
+        //     (err,data)=>{                
+        //     if(err)
+        //         res.status(400).send(err)
+        //     else{
+        //         console.log("updated succssefuly")
+        //      res.status(200).send(data)
+        //     }
+        // });
     },
 
     /**
