@@ -19,7 +19,7 @@ module.exports = {
      */
     getGuide: function (req, res) {
         const guideName = req.params["guide_name"];
-        Tour.findOne({ 'name':  guideName}).then(guide =>
+        Guide.findOne({ 'name':  guideName}).then(guide =>
             res.send(guide)
         ).catch(e => res.status(500).send("Guide doesn't exist."))
     },
