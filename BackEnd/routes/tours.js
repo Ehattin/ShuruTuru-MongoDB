@@ -182,11 +182,11 @@ module.exports = {
     
        Tour.deleteOne( { name: tourName }).then(user => {
             if (!user) {
-                return res.status(404).send()
+                return res.status(404).send("Tour doesn't exist.")
             }
             else {
-                console.log(user)
-                res.send(user)
+                console.log(user+" deleted successfully")
+                res.status(200).send(user)
             }
         }).catch(e => res.status(400).send(e))
     }
