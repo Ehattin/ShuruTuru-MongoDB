@@ -10,8 +10,8 @@ module.exports = {
      */ 
     getGuides: function (req, res) {
         Guide.find().then(guides =>
-            res.send(guides)
-        ).catch(e => res.status(500).send(e))
+            res.status(200).send(guides)
+        ).catch(e => res.status(500).send("Error in finding the guide. " + e))
     },
     
     /** 
@@ -20,9 +20,10 @@ module.exports = {
     getGuide: function (req, res) {
         const guideName = req.params["guide_name"];
         Guide.findOne({ 'name':  guideName}).then(guide =>
-            res.send(guide)
-        ).catch(e => res.status(500).send("Guide doesn't exist."))
+            res.status(200).send(guide)
+        ).catch(e => res.status(500).send("Error in finding the guide. " + e))
     },
+
     /* ***************CREATE*************** */
     /** 
      * This method gets:
@@ -31,13 +32,39 @@ module.exports = {
      * After adding the guide, the status is returns.
      */
     createGuide: function (req, res) {
-        const guide = new Guide(req.body)
+        const guideName = req.body.name;
+        if(!guideName){
+            res.status(400).send("Guide name required.")
+            return;
+        }
 
-        guide.save().then(guide => {
-            res.status(201).send(guide)
-        }).catch(e => {
-            res.status(400).send("Guide with this name already exist.")
-        });
+        //checking if a guy with this name exist
+        Guide.exists({ 'name':  guideName}, function(err, result) {
+            if (err) {
+                res.status(500).send("Error in checking if the guide exist. " + err)
+                console.log("Error in checking if the guide exist. " + err)
+            }
+            else {
+                if(result){
+                    res.status(400).send("Guide with this name exist.")
+                    console.log("Guide with this name exist. ")
+                }
+                else{
+                //adding the new guide
+                const guide = new Guide(req.body)
+
+                guide.save()
+                    .then(guide => 
+                        res.status(200).send()
+                    ).catch(e => {
+                        res.status(500).send("Error in saving guide. " + e)
+                        console.log("Error in saving guide. " + e)
+                });
+                }
+            
+            }
+        })
+      
 
     },
 

@@ -49,7 +49,14 @@ function valdiateForm(){
             location.href = "/list";
           },
           error: function(request, status, error){
-              console.log( "Error: data was not loaded properly" + error);
+              if(error == "Bad Request"){
+                  alert("Guide with this name exist.");
+                  console.log( "Error: Guide with this name exist. " + error);
+              }
+              else{
+                alert("Error in  the server, maybe validation error. Check the fields and try again.");
+                console.log( "Error in the server. " + error);
+              }
           }
       })
       event.preventDefault();
