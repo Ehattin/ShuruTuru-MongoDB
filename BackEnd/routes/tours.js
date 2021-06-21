@@ -179,15 +179,25 @@ module.exports = {
     deleteTour: function (req, res) {
      
         const tourName = req.params["tour_name"];
-    
+        
        Tour.deleteOne( { name: tourName }).then(user => {
-            if (!user) {
-                return res.status(404).send("Tour doesn't exist.")
+           
+        if(!tourName){
+            res.status(400).send("Tour name required.")
+            return;
+        }
+        //checking if a tour with this name exist
+        Tour.exists({ 'name':  tourName}, function(err, result) {
+            
+            if (err) {
+                res.send("Error Tour name doesn't exist!" + err)
+                console.log("Error Tour name doesn't exist!" + err)
             }
             else {
-                console.log(user+" deleted successfully")
+                console.log(tourName +" deleted successfully")
                 res.status(200).send(user)
             }
+        }); 
         }).catch(e => res.status(400).send(e))
     }
 };
