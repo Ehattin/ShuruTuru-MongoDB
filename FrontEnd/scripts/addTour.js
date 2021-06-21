@@ -83,7 +83,7 @@ function submitForm(){
         },
         error: function(request, status, error){
           if(error == "Bad Request"){
-            alert("Guide with this name exist.");
+            alert("Tour with this name exists");
             console.log( "Error: Tour with this name already exists! " + error);
           }
           else{
