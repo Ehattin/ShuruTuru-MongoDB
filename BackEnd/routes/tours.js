@@ -27,7 +27,7 @@ module.exports = {
         const tourName = req.params["tour_name"];
         Tour.findOne({ 'name':  tourName}).populate('guide').then(tour =>
             res.status(200).send(tour)
-        ).catch(e => res.status(500).send("Tour "+e+ "doesn't exist."))
+        ).catch(e => res.status(400).send("Tour "+tourName+ "doesn't exist. " + e))
     },
   
     /* ***************CREATE*************** */
@@ -43,11 +43,14 @@ module.exports = {
     createTour: function (req, res) {
 
         const guideName = req.body.guide;
-
+        if(!guideName){
+            res.status(400).send("Guide name required.")
+            return;
+        }
         //getting the guide id by his name
         Guide.findOne({ 'name':  guideName}).then(guide =>{
 
-            //updating the guide field to the guide id
+            //found thhis guide in the db - updating the guide field to the guide id
             let guideId = guide._id.toString();
             req.body.guide = guideId;
             console.log("guide id was found")
@@ -66,19 +69,20 @@ module.exports = {
                 }
                 else {
                     if(result){
+                        //found a tour with this name already!
                         res.status(400).send("A Tour with this name already exists.")
                         console.log("A Tour with this name already exists. ")
                     }
                     else{
-                        //creating the new tour
-                        const tour = new Tour(req.body);
+                        //no tour with this name - creating the new tour
+                        const tour = new Tour(req.body); //also validate other required fields
 
                         tour.save()
                             .then(tour => 
                             res.status(200).send()
                         ).catch(e => {
                             console.log("error in save tour: " + e)
-                            res.status(400).send("Tour with this name already exist.")
+                            res.status(500).send("Error in saving the tour. " + e)
                         });
                     }
                 
@@ -107,6 +111,7 @@ module.exports = {
         const allowedUpdates = ['start_date', 'duration', 'price']
         const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
     
+        //checking for valid update fields
         if (!isValidOperation) {
             return res.status(400).send({ error: 'Invalid updates!' })
         }
@@ -114,12 +119,12 @@ module.exports = {
         //updating the tour document
         Tour.updateOne( { name: tourName }, req.body, { new: true, runValidators: true }).then(user => {
                 if (!user) {
-                    return res.status(404).send("Tour doesn't exist.")
+                    return res.status(400).send("Tour doesn't exist.")
                 }
                 else {
-                    res.send(user)
+                    res.status(200).send(user)
                 }
-            }).catch(e => res.status(400).send(e))
+            }).catch(e => res.status(500).send(e))
     },
 
     /**
@@ -128,49 +133,122 @@ module.exports = {
     createSiteInPath: function (req, res) {
         const tourName = req.params["tour_name"];
         
-        //creating the new site
-         const site = new Site(req.body);
+        //checking if we got a valid site name
+        const siteName = req.body.name;
+        if(!siteName){
+            res.status(400).send("Site name required.");
+            return;
+        }
         
-         Tour.updateOne( { name: tourName }, 
-            { '$addToSet': { 'path': site } }
-        ).then(user => {
-                if (!user) {
-                   res.status(404).send("Tour doesn't exist.")
+        //checking if we got a valid country
+        if(!req.body.country){
+            res.status(400).send("Site country required.");
+            return;
+        }
+
+        //checking if a tour with this name exist
+        Tour.exists({'name': tourName}, function(err, result) {
+            if (err) {
+                res.status(500).send(e);
+                console.log("Error in checking if tour exist" + err);
+            }
+            else {
+                if(result){
+                     //found a this tour
+                    //checking if a site with this name allready exist
+                    Tour.exists({'name': tourName, "path.name": siteName}, function(err, result) {
+                        if (err) {
+                            res.status(500).send(e);
+                            console.log("Error in checking if site exist" + err);
+                        }
+                        else {
+                            if(result){
+                                //found a site in this tour with the same name
+                                    console.log("In this tour, site with this name already exist.")
+                                    res.status(400).send("In this tour, site with this name already exist.")
+                            }
+                            else{
+                                //didnt find a site with the same name in the tour
+                                //creating the new site
+                                const site = new Site(req.body);
+                                
+                                Tour.updateOne( { name: tourName }, 
+                                    { '$addToSet': { 'path': site } }
+                                    ).then(user => {
+                                        console.log("updated succssefuly")
+                                        res.status(200).send()
+                                    }).catch(e => {
+                                        console.log("ERROR IN UPDATE: " +e);
+                                        res.status(500).send("Error in update the new site. " + e)
+                                    })
+                            }
+                        }
+                    
+                    }) 
                 }
-                else {
-                    console.log("updated succssefuly")
-                    res.status(200).send()
+                else{
+                    //didn't find this tour
+                    console.log("This tour don't exist.")
+                    res.status(400).send("This tour don't exist.")
                 }
-            }).catch(e => {
-                console.log("ERROR IN UPDATE: " +e);
-                res.status(400).send("Path with this name already exist.")
-            })
+            }
+        })
+
     },
     /* ***************DELETE*************** */
 
     /**
      * Deletes a given tour site.
-     * If the given site is empty - "", all the tour sites will be deleted.
      */
     deleteSite: function (req, res) {
 
         const tourName = req.params["tour_name"];
         const siteName = req.params["site_name"];
 
-        Tour.updateOne( { name: tourName }, 
-            { $pull: { 'path': { name: siteName} }}
-        ).then(user => {
-                if (!user) {
-                   res.status(404).send("Tour doesn't exist.")
+         //checking if a tour with this name exist
+         Tour.exists({'name': tourName}, function(err, result) {
+            if (err) {
+                res.status(500).send(e);
+                console.log("Error in checking if tour exist" + err);
+            }
+            else {
+                if(result){
+                    //found a this tour
+                    //checking if a site with this name allready exist
+                    Tour.exists({'name': tourName, "path.name": siteName}, function(err, result) {
+                        if (err) {
+                            res.status(500).send(e);
+                            console.log("Error in checking if site exist" + err);
+                        }
+                        else {
+                            if(result){
+                                //found this site in this tour 
+                                //delete it
+                                Tour.updateOne( { name: tourName }, { $pull: { 'path': { name: siteName} }}
+                                    ).then(user => {
+                                        console.log("updated succssefuly")
+                                        res.status(200).send()
+                                    }).catch(e => {
+                                        console.log("ERROR IN DELETE: " +e);
+                                        res.status(500).send(e)
+                                    })
+                            }
+                            else{
+                                //didnt find a site with this name in the tour
+                                console.log("This site don't exist in this tour.")
+                                res.status(400).send("This site don't exist in this tour.")
+                            }
+                        }
+                    
+                    }) 
                 }
-                else {
-                    console.log("updated succssefuly")
-                    res.status(200).send()
+                else{
+                    //didn't find this tour
+                    console.log("This tour don't exist.")
+                    res.status(400).send("This tour don't exist.")
                 }
-            }).catch(e => {
-                console.log("ERROR IN DELETE: " +e);
-                res.status(400).send("Path with this name already exist.")
-            })
+            }
+        })
     },
 
     /**
@@ -180,24 +258,33 @@ module.exports = {
      
         const tourName = req.params["tour_name"];
         
-       Tour.deleteOne( { name: tourName }).then(user => {
-           
+        //making sure we got the tour name
         if(!tourName){
             res.status(400).send("Tour name required.")
             return;
         }
+        
         //checking if a tour with this name exist
         Tour.exists({ 'name':  tourName}, function(err, result) {
             
             if (err) {
-                res.send("Error Tour name doesn't exist!" + err)
-                console.log("Error Tour name doesn't exist!" + err)
+                res.status(500).send(e);
+                console.log("Error in checking if tour exist" + err);
             }
             else {
-                console.log(tourName +" deleted successfully")
-                res.status(200).send(user)
+                if(result){
+                     //found the tour - delete it
+                    Tour.deleteOne( { name: tourName }).then(t => {
+                        console.log(tourName +" deleted successfully")
+                        res.status(200).send()
+                    }).catch(e => res.status(500).send(e));
+                }
+                else{
+                    //didnt find a tour with this name
+                    res.status(400).send("A Tour with this name don't exists.")
+                    console.log("A Tour with this name don't exists. ")
+                }
             }
-        }); 
-        }).catch(e => res.status(400).send(e))
+        })   
     }
 };
