@@ -51,22 +51,42 @@ module.exports = {
             //updating the guide field to the guide id
             req.body.guide = guideId;
 
+
+
+            //checking if a guy with this name exist
+        Tour.exists({ 'name':  tourName}, function(err, result) {
+            if (err) {
+                res.status(500).send("Error in checking if the Tour exists. " + err)
+                console.log("Error in checking if the Tour exists. " + err)
+            }
+            else {
+                if(result){
+                    res.status(400).send("A Tour with this name already exists.")
+                    console.log("A Tour with this name already exists. ")
+                }
+                else{
             //creating the new tour
             const tour = new Tour(req.body);
             console.log("guide id was found")
 
-            tour.save().then(tour => {
+            tour.save()
+                .then(tour => 
                 res.status(200).send()
-            }).catch(e => {
+            ).catch(e => {
                 console.log("error in save tour: " + e)
                 res.status(400).send("Tour with this name already exist.")
             });
-            }
-        ).catch(e => {
-            console.log("guide id was not found")
-            res.status(400).send("This guide doesn't exist.")
-        })
-    },
+        }
+    
+    }
+})
+
+
+},
+
+},
+
+  
 
    /* ***************UPDATE*************** */
 
