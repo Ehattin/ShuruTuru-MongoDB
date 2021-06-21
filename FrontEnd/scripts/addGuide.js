@@ -51,7 +51,7 @@ function valdiateForm(){
           error: function(request, status, error){
               if(error == "Bad Request"){
                   alert("Guide with this name exist.");
-                  console.log( "Error: Guide with this name exist. " + error);
+                  console.log( "Error: Guide with this name already exists! " + error);
               }
               else{
                 alert("Error in  the server, maybe validation error. Check the fields and try again.");
