@@ -51,7 +51,12 @@ module.exports = {
             let guideId = guide._id.toString();
             req.body.guide = guideId;
             console.log("guide id was found")
-
+            
+            const tourName = req.body.name;
+            if(!tourName){
+                res.status(400).send("Tour name required.")
+                return;
+            }
             //checking if a tour with this name exist
             Tour.exists({ 'name':  tourName}, function(err, result) {
                 
