@@ -41,7 +41,7 @@ module.exports = {
      */
     createTour: function (req, res) {
         const guideName = req.body.guide;
-
+        console.log("trying to get: " + guideName)
         //getting the guide id by his name
         Guide.findOne({ 'name':  guideName}).then(guide =>{
 
@@ -52,14 +52,19 @@ module.exports = {
 
             //creating the new tour
             const tour = new Tour(req.body);
-            
+            console.log("guide id was found")
+
             tour.save().then(tour => {
-                res.status(201).send(tour)
+                res.status(200).send()
             }).catch(e => {
+                console.log("error in save tour: " + e)
                 res.status(400).send("Tour with this name already exist.")
             });
             }
-        ).catch(e => res.status(400).send("This guide doesn't exist."))
+        ).catch(e => {
+            console.log("guide id was not found")
+            res.status(400).send("This guide doesn't exist.")
+        })
     },
 
    /* ***************UPDATE*************** */
@@ -139,25 +144,6 @@ module.exports = {
                 console.log("ERROR IN DELETE: " +e);
                 res.status(400).send("Path with this name already exist.")
             })
-      
-      
-    
-        // const siteCountry = req.body.country;
-
-        // const siteToDelete = "path." + siteName;
-
-        // let update = {$unset:{}};    
-        // update.$unset[siteToDelete] = undefined;
-
-        // Tour.updateOne({ name: tourName },{$pull: {path:{name: siteName, country:siteCountry}}},{upsert:true,multi:false},
-        //     (err,data)=>{                
-        //     if(err)
-        //         res.status(400).send(err)
-        //     else{
-        //         console.log("updated succssefuly")
-        //      res.status(200).send(data)
-        //     }
-        // });
     },
 
     /**
