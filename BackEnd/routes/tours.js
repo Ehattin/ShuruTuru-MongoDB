@@ -41,50 +41,51 @@ module.exports = {
      * After adding the tour, the status is returns.
      */
     createTour: function (req, res) {
+
         const guideName = req.body.guide;
-        console.log("trying to get: " + guideName)
+
         //getting the guide id by his name
         Guide.findOne({ 'name':  guideName}).then(guide =>{
 
-            let guideId = guide._id.toString();
-
             //updating the guide field to the guide id
+            let guideId = guide._id.toString();
             req.body.guide = guideId;
-
-
-
-            //checking if a guy with this name exist
-        Tour.exists({ 'name':  tourName}, function(err, result) {
-            if (err) {
-                res.status(500).send("Error in checking if the Tour exists. " + err)
-                console.log("Error in checking if the Tour exists. " + err)
-            }
-            else {
-                if(result){
-                    res.status(400).send("A Tour with this name already exists.")
-                    console.log("A Tour with this name already exists. ")
-                }
-                else{
-            //creating the new tour
-            const tour = new Tour(req.body);
             console.log("guide id was found")
 
-            tour.save()
-                .then(tour => 
-                res.status(200).send()
-            ).catch(e => {
-                console.log("error in save tour: " + e)
-                res.status(400).send("Tour with this name already exist.")
+            //checking if a tour with this name exist
+            Tour.exists({ 'name':  tourName}, function(err, result) {
+                
+                if (err) {
+                    res.status(500).send("Error in checking if the Tour exists. " + err)
+                    console.log("Error in checking if the Tour exists. " + err)
+                }
+                else {
+                    if(result){
+                        res.status(400).send("A Tour with this name already exists.")
+                        console.log("A Tour with this name already exists. ")
+                    }
+                    else{
+                        //creating the new tour
+                        const tour = new Tour(req.body);
+
+                        tour.save()
+                            .then(tour => 
+                            res.status(200).send()
+                        ).catch(e => {
+                            console.log("error in save tour: " + e)
+                            res.status(400).send("Tour with this name already exist.")
+                        });
+                    }
+                
+                }
             });
-        }
+        
+        }).catch(e => {
+            console.log("error in getting guide: " + e)
+            res.status(400).send("Guide with this name don't exist.")
+        });
     
-    }
-})
-
-
-},
-
-},
+    },
 
   
 
