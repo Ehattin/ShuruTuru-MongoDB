@@ -14,9 +14,10 @@ module.exports = {
      */
     getTours: function (req, res) {
         Tour.find().populate('guide').sort({name:1}).then(tours =>{
-            res.send(tours)
+            res.status(200).send(tours)
         }
-        ).catch(e => res.status(500).send(e))
+        ).catch(e => res.status(500).send("Error in finding the Tours. " + e))
+        
     },
     
     /** 
@@ -25,8 +26,8 @@ module.exports = {
     getTour: function (req, res) {
         const tourName = req.params["tour_name"];
         Tour.findOne({ 'name':  tourName}).populate('guide').then(tour =>
-            res.send(tour)
-        ).catch(e => res.status(500).send("Tour doesn't exist."))
+            res.status(200).send(tour)
+        ).catch(e => res.status(500).send("Tour "+e+ "doesn't exist."))
     },
   
     /* ***************CREATE*************** */
