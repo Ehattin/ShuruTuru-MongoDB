@@ -19,6 +19,10 @@ function getGuidesNames(){
 }
 
 function setGuidesNames(data){
+  if(data.length == 0){
+    alert("There is no guide available. Please insert a guide first.");
+    location.href = "/list";
+  }
   $.each(data, function (i, guide) {
     $("#guide_name").append($('<option>', { 
         value: guide.name,

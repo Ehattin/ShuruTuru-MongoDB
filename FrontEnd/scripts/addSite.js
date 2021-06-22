@@ -55,7 +55,14 @@ function submitForm(){
             location.href = "/list";
           },
           error: function(request, status, error){
-              console.log( "Error: data was not load properly" + error);
+            if(error == "Bad Request"){
+              alert("Site with this name exists");
+              console.log( "Error: Site with this name already exists! " + error);
+            }
+            else{
+              alert("Error in  the server, maybe validation error. Check the fields and try again.");
+              console.log( "Error in the server. " + error);
+            }
           }
       })
   
